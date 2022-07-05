@@ -13,11 +13,11 @@ const devConfig = {
 
   synchronize: true,
   logging: true,
-  entities: ['src/entities/*.entity.ts'],
-  migrations: ['src/migrations/*.ts'],
+  entities: ['dist/entities/*.entity.js'],
+  migrations: ['dist/migrations/*.js'],
   cli: {
-    migrationsDir: 'src/migrations',
-    entitiesDir: 'src/entities',
+    migrationsDir: 'dist/migrations',
+    entitiesDir: 'dist/entities',
   },
 };
 
@@ -28,11 +28,11 @@ const prodConfig = {
   logging: true,
   ssl: { rejectUnauthorized: false },
 
-  entities: ['src/entities/*.entity.js'],
-  migrations: ['src/migrations/*.js'],
+  entities: ['dist/entities/*.entity.js'],
+  migrations: ['dist/migrations/*.js'],
   cli: {
-    migrationsDir: 'src/entities/*.entity.js',
-    entitiesDir: 'src/migrations/*.js',
+    migrationsDir: 'dist/entities/*.entity.js',
+    entitiesDir: 'dist/migrations/*.js',
   },
 };
 
