@@ -43,19 +43,24 @@ export class UsersService {
     }
   }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<Partial<User>[]> {
+    const users = await this.usersRepository.find();
+    return users.map(
+      ({ password, ...userWhitoutPassword }) => userWhitoutPassword,
+    );
   }
 
-  findOne(id: string): Promise<User> {
+  async findOne(id: string): Promise<Partial<User>> {
     try {
-      const user = this.usersRepository.findOneBy({ user_id: id });
+      const user = await this.usersRepository.findOneBy({ user_id: id });
 
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      return user;
+      const { password, ...userWithoutPassword } = user;
+
+      return userWithoutPassword;
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
