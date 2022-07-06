@@ -1,23 +1,26 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { User } from 'src/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from 'src/entities/user.entity';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('/register')
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
@@ -28,16 +31,29 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(id);
+    try {
+      return this.usersService.findOne(id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+    try {
+      return this.usersService.update(id, updateUserDto);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+    try {
+      return this.usersService.remove(id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 }
