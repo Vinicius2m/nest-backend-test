@@ -33,11 +33,9 @@ export class UsersService {
         password: hashedPassword,
       });
 
-      const { password, ...createdUserInfo } = await this.usersRepository.save(
-        createdUser,
-      );
+      const finalUser = await this.usersRepository.save(createdUser);
 
-      return createdUserInfo;
+      return { ...finalUser, password: undefined };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
@@ -45,9 +43,7 @@ export class UsersService {
 
   async findAll(): Promise<Partial<User>[]> {
     const users = await this.usersRepository.find();
-    return users.map(
-      ({ password, ...userWhitoutPassword }) => userWhitoutPassword,
-    );
+    return users.map((user) => ({ ...user, password: undefined }));
   }
 
   async findOne(id: string): Promise<Partial<User>> {
@@ -58,9 +54,7 @@ export class UsersService {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      const { password, ...userWithoutPassword } = user;
-
-      return userWithoutPassword;
+      return { ...user, password: undefined };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
@@ -78,9 +72,7 @@ export class UsersService {
         );
       }
 
-      const { password, ...updatedUserWithoutPassword } = updatedUser;
-
-      return updatedUserWithoutPassword;
+      return { ...updatedUser, password: undefined };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
