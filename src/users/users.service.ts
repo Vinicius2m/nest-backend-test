@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { CartService } from 'src/cart/cart.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly cartService: CartService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
@@ -26,10 +28,13 @@ export class UsersService {
         );
       }
 
+      const cart = await this.cartService.create();
+
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
       const createdUser = this.usersRepository.create({
         ...createUserDto,
+        cart: cart,
         password: hashedPassword,
       });
 
