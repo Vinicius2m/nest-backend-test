@@ -11,13 +11,11 @@ const devConfig = {
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
 
-  synchronize: true,
   logging: true,
   entities: ['dist/entities/*.entity.js'],
   migrations: ['dist/migrations/*.js'],
   cli: {
     migrationsDir: 'dist/migrations',
-    entitiesDir: 'dist/entities',
   },
 };
 
@@ -31,8 +29,7 @@ const prodConfig = {
   entities: ['dist/entities/*.entity.js'],
   migrations: ['dist/migrations/*.js'],
   cli: {
-    migrationsDir: 'dist/entities/*.entity.js',
-    entitiesDir: 'dist/migrations/*.js',
+    migrationsDir: 'dist/migrations',
   },
 };
 
