@@ -1,12 +1,13 @@
 import {
   Controller,
   Delete,
-  HttpCode,
   HttpException,
   HttpStatus,
   Param,
   Post,
 } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/entities/user.entity';
 import { CartService } from './cart.service';
 
 @Controller('cart')
@@ -23,9 +24,12 @@ export class CartController {
   }
 
   @Delete(':product_id')
-  removeProduct(@Param('product_id') product_id: string) {
+  removeProduct(
+    @Param('product_id') product_id: string,
+    @CurrentUser() user: User,
+  ) {
     try {
-      return this.cartService.removeProduct(product_id, 'cart_id');
+      return this.cartService.removeProduct(product_id, user.cart.cart_id);
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
