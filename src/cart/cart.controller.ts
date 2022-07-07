@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   HttpException,
@@ -9,15 +10,24 @@ import {
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/entities/user.entity';
 import { CartService } from './cart.service';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @Post(':product_id')
-  addProduct(@Param('product_id') product_id: string) {
+  @Post()
+  addProduct(
+    @Body() createProductDto: CreateProductDto,
+    @CurrentUser() user: User,
+  ) {
     try {
-      return this.cartService.addProduct(product_id);
+      const finalUser = this.cartService.registerProduct(
+        createProductDto,
+        user.user_id,
+      );
+
+      return finalUser;
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
@@ -29,7 +39,7 @@ export class CartController {
     @CurrentUser() user: User,
   ) {
     try {
-      return this.cartService.removeProduct(product_id, user.cart.cart_id);
+      return this.cartService.removeProduct(product_id, user.user_id);
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }

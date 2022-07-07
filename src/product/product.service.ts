@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateProductDto } from 'src/cart/dto/create-product.dto';
 import { Product } from 'src/entities/product.entity';
 import { Repository } from 'typeorm';
 
@@ -9,6 +10,26 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
   ) {}
+
+  create(createProductDto: CreateProductDto) {
+    try {
+      const { id, ...productInfo } = createProductDto;
+
+      const createdProduct = this.productRepository.create(productInfo);
+
+      return this.productRepository.save(createdProduct);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  findByName(name: string) {
+    try {
+      return this.productRepository.findOneBy({ name });
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
 
   findOne(product_id: string) {
     try {
