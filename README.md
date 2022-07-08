@@ -5,34 +5,34 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Backend Teste Técnico Devnology
 
-## Description
+## - Descrição
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+API feita em [Nest](https://github.com/nestjs/nest) para suprir uma aplicação de e-commerce.
 
-## Installation
+## - Processo de desenvolvimento
+Para iniciar o desenvolvimento deste desafio, me propus a usar o framework NestJS para ter um novo aprendizado dentro das tecnologias que eu conheço. Tendo isso em vista, eu optei por utilizar um banco de dados SQL como o postgreSQL pois já tenho experiência anterior, a partir daí eu comecei elaborando o diagrama de entidades e relacionamentos tendo em vista o objetivo da aplicação.
+
+<img src="./src/assets/diagramaER.png">
+
+A tabela de produtos foi um dos pontos problemáticos pois cada produto de cada fornecedor que era recebido de forma externa tinha atributos diferentes entre eles, porém, como exitiam atributos iguais, esses foram determinados como obrigatórios e o restante se tornou opicional na inserção de um novo produto. Feito isso, parti para o desenvolvimento da aplicação em si, tive que fazer a integração do TypeORM ao Nest e, utilizando o padrão Repository, aprender os conceitos particulares do framework e com isso poder gerar todos os endpoints e suas regras de negócio.
+
+## - Instalação
+Após clonar este repositório rode o seguinte comando no seu terminal:
 
 ```bash
 $ npm install
 ```
+## - Banco de dados
+Essa aplicação necessita de um banco de dados PostgreSQL para rodar, por isso é necessário criar um arquivo .env baseado no arquivo .env.example deste projeto e preenchê-lo com as credenciais do seu banco de dados. 
+Além disso preencha também as outras variáveis de ambiente necessárias, e em seguida rode no seu terminal o comando para rodar as migrations e criar as tabelas:
 
-## Running the app
+```bash
+$ npm run typeorm migration:run -d src/data-source.ts
+```
+
+## - Rodando a API
 
 ```bash
 # development
@@ -45,29 +45,199 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
+## - Documentação
 
-# e2e tests
-$ npm run test:e2e
+| URL Base  | Endereços                      |
+| --------| ----------------------------- | 
+| Local    |  http://localhost:8000 -> ou :PORT(.env)  |
+| Deploy    |  https://api-ecommerce-default.herokuapp.com |
 
-# test coverage
-$ npm run test:cov
+
+### Rotas
+| Methods | Endpoint                      | Responsability                        | Need Token? |
+| --------| ----------------------------- | --------------------------------------|------------- |
+| POST    |  /users/register               | Rota para criação de um usuário       | false |
+| POST    |  /users/login                  | Rota para o usuário acessar sua conta | false |
+| GET    |  /users                         | Rota para acessar todos os usuários   | true |
+| GET    |  /users/:id                     | Rota para acessar um usuário específico | true |
+| POST    | /cart                         | Rota para adicionar um item ao carrinho do usuário do token | true |
+| DELETE  | /cart/:product_id                         | Rota para deletar um item especifico no carrinho do usuário do token |  true |
+| POST    | /cart/checkout                 | Rota para finalizar a compra | true |
+
+#
+
+## - Requisições
+
+## POST  - /users/register
+Campos obrigatórios: 'name', 'email', 'cpf', 'password'
+<br>Exemplo de requisição:
+```json
+{
+    "name": "Vinícius de Freitas", 
+    "email":"vinicius@email.com",
+    "password":"aA1234",
+    "cpf": "12312312312"
+}
+```
+Caso dê tudo certo irá retornar o status code 201 e a seguinte resposta:
+
+```json
+{
+ "user_id": "7e0040a8-16ed-4a61-a14a-133842817921",
+ "name": "Vinícius de Freitas",
+  "email":"vinicius@email.com",
+  "cpf": "12312312312",
+  "cart": {
+    "cart_id": "136062d3-c150-4ce3-83af-93f6afc24f23",
+    "total": 0
+  }
+}
 ```
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## POST - /users/login
 
-## Stay in touch
+Campos obrigatórios: 'email', 'password'
+<br>Exemplo de requisição:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```json
+{
+	"email":"vinicius@email.com",
+    "password":"aA1234"
+}
 
-## License
+```
+Caso dê tudo certo irá retornar o status code 200 e a seguinte resposta:
 
-Nest is [MIT licensed](LICENSE).
+```json
+{
+  "token": <token>
+}
+```
+
+## GET - /users
+Authorization: Bearer `Token`<br>
+Caso dê tudo certo irá retornar o status code 200 e a seguinte resposta:
+
+```json
+[
+  {
+    "user_id": "cce5b9db-05dc-4ce4-a805-f57bb1cc1e68",
+    "name": "Vinícius de Freitas",
+    "email": "teste@teste.com",
+    "cpf": "12312312312",
+    "orders": [],
+    "cart": {
+      "cart_id": "22a609f4-df34-4d48-a521-6b8278c82380",
+      "total": 0,
+      "products": []
+    }
+  }
+]
+```
+
+## GET - /users/:id
+Authorization: Bearer `Token`<br>
+Caso dê tudo certo irá retornar o status code 200 e a seguinte resposta:
+
+```json
+{
+  "user_id": "7e0040a8-16ed-4a61-a14a-133842817921",
+  "name": "Vinícius de Freitas",
+  "email":"vinicius@email.com",
+  "cpf": "12312312312",
+  "orders": [],
+  "cart": {
+    "cart_id": "136062d3-c150-4ce3-83af-93f6afc24f23",
+    "total": 0,
+    "products": []
+  }
+}
+```
+
+## POST  - /cart
+Authorization: Bearer `Token`
+<br>Campos obrigatórios: 'name', 'description', 'price', 'image', 'material'
+<br>Campos opicionais: 'category', 'department', 'has_discount', 'discount_value', 'adjective'
+<br>Exemplo de requisição:
+```json
+{
+	"name": "Handcrafted Frozen Sausages",
+	"description": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals",
+	"price": "723.00",
+	"image": "http://placeimg.com/640/480/sports",
+	"material": "Concrete",
+	"has_discount": false,
+	"discount_value": "0.05",
+	"adjective": "Gorgeous"
+}
+```
+Caso dê tudo certo irá retornar o status code 201 e a seguinte resposta:
+
+```json
+{
+  "cart_id": "1888a40a-af40-4c9d-8de8-ebdd70686e7d",
+  "total": 723,
+  "products": [
+    {
+      "product_id": "6c983f95-2000-4220-883b-3c6bf7188880",
+      "name": "Handcrafted Frozen Sausages",
+      "description": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals",
+      "price": "723.00",
+      "image": "http://placeimg.com/640/480/sports",
+      "material": "Concrete",
+      "category": null,
+      "department": null,
+      "has_discount": false,
+      "discount_value": "0.05",
+      "adjective": "Gorgeous"
+    }
+  ]
+}
+```
+
+## DELETE	- /cart/:product_id
+Para esta rota é somente necessário passar o id do produto a ser deletado do carrinho.
+
+Authorization: Bearer `Token`
+
+Caso dê tudo certo irá retornar o status code 200 e a seguinte resposta:
+
+```json
+{
+  "cart_id": "1888a40a-af40-4c9d-8de8-ebdd70686e7d",
+  "total": 0,
+  "products": []
+}
+```
+
+## POST	 - /cart/checkout
+Esta rota é para finalizar a compra e registrar os produtos no carrinho gerando uma ordem de compra.
+
+Authorization: Bearer `Token`
+
+Caso dê tudo certo irá retornar o status code 201 e a seguinte resposta:
+
+```json
+{
+  "total": 723,
+  "timestamp": "2022-07-08T12:15:29.906Z",
+  "products": [
+    {
+      "product_id": "6c983f95-2000-4220-883b-3c6bf7188880",
+      "name": "Handcrafted Frozen Sausages",
+      "description": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals",
+      "price": "723.00",
+      "image": "http://placeimg.com/640/480/sports",
+      "material": "Concrete",
+      "category": null,
+      "department": null,
+      "has_discount": false,
+      "discount_value": "0.05",
+      "adjective": "Gorgeous"
+    }
+  ],
+  "order_id": "9e83766d-5228-4f67-837f-75a83b0c3c97"
+}
+```
