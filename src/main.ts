@@ -16,7 +16,7 @@ async function bootstrap() {
     }),
   );
 
-  const PORT: string = process.env.SERVER_PORT ?? '8000';
+  const PORT: string = process.env.PORT ?? '8000';
   app.listen(PORT, () => console.log(`Running at port ${PORT}`));
 }
 bootstrap();
