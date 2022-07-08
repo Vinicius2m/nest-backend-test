@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { Cart } from './cart.entity';
+import { Order } from './order.entity';
 
 @Entity('users')
 export class User {
@@ -23,6 +25,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany((type) => Order, (order) => order.user, { eager: true })
+  orders: Order[];
 
   @OneToOne((type) => Cart, { eager: true })
   @JoinColumn()
