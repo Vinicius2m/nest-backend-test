@@ -44,4 +44,13 @@ export class CartController {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
+
+  @Post('checkout')
+  checkout(@CurrentUser() user: User) {
+    try {
+      return this.cartService.checkout(user.user_id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
 }

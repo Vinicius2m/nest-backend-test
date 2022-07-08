@@ -32,9 +32,10 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Partial<User>> {
+  async findOne(@Param('id') id: string): Promise<Partial<User>> {
     try {
-      return this.usersService.findOne(id);
+      const user = await this.usersService.findOne(id);
+      return user;
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
