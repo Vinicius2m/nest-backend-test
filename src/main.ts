@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -15,8 +15,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-
-  app.enableCors();
 
   const PORT: string = process.env.PORT ?? '8000';
   app.listen(PORT, () => console.log(`Running at port ${PORT}`));
