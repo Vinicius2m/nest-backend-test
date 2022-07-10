@@ -23,22 +23,21 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
+    const userByEmail = await this.usersRepository.findOneBy({
+      email: createUserDto.email,
+    });
+
+    const userByCpf = await this.usersRepository.findOneBy({
+      cpf: createUserDto.cpf,
+    });
+
+    if (userByEmail || userByCpf) {
+      throw new HttpException(
+        { message: 'User already exists' },
+        HttpStatus.CONFLICT,
+      );
+    }
     try {
-      const userByEmail = await this.usersRepository.findOneBy({
-        email: createUserDto.email,
-      });
-
-      const userByCpf = await this.usersRepository.findOneBy({
-        cpf: createUserDto.cpf,
-      });
-
-      if (userByEmail || userByCpf) {
-        throw new HttpException(
-          { message: 'User already exists' },
-          HttpStatus.CONFLICT,
-        );
-      }
-
       const cart = await this.cartService.create();
 
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
