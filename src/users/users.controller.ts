@@ -15,6 +15,7 @@ import { User } from 'src/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -27,15 +28,10 @@ export class UsersController {
   }
 
   @Get()
-  findAll(): Promise<Partial<User>[]> {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Partial<User>> {
+  async findOne(@CurrentUser() user): Promise<Partial<User>> {
     try {
-      const user = await this.usersService.findOne(id);
-      return user;
+      const finalUser = await this.usersService.findOne(user.user_id);
+      return finalUser;
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
