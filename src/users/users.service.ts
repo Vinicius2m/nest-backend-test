@@ -24,14 +24,18 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     try {
-      const user = await this.usersRepository.findOneBy({
+      const userByEmail = await this.usersRepository.findOneBy({
         email: createUserDto.email,
       });
 
-      if (user) {
+      const userByCpf = await this.usersRepository.findOneBy({
+        cpf: createUserDto.cpf,
+      });
+
+      if (userByEmail || userByCpf) {
         throw new HttpException(
           { message: 'User already exists' },
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.CONFLICT,
         );
       }
 
