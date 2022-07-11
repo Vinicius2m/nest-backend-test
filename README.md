@@ -59,8 +59,7 @@ $ npm run start:prod
 | --------| ----------------------------- | --------------------------------------|------------- |
 | POST    |  /users/register               | Rota para criação de um usuário       | false |
 | POST    |  /users/login                  | Rota para o usuário acessar sua conta | false |
-| GET    |  /users                         | Rota para acessar todos os usuários   | true |
-| GET    |  /users/:id                     | Rota para acessar um usuário específico | true |
+| GET    |  /users                        | Rota para acessar um usuário específico | true |
 | POST    | /cart                         | Rota para adicionar um item ao carrinho do usuário do token | true |
 | DELETE  | /cart/:product_id                         | Rota para deletar um item especifico no carrinho do usuário do token |  true |
 | POST    | /cart/checkout                 | Rota para finalizar a compra | true |
@@ -117,27 +116,6 @@ Caso dê tudo certo irá retornar o status code 200 e a seguinte resposta:
 ```
 
 ## GET - /users
-Authorization: Bearer `Token`<br>
-Caso dê tudo certo irá retornar o status code 200 e a seguinte resposta:
-
-```json
-[
-  {
-    "user_id": "cce5b9db-05dc-4ce4-a805-f57bb1cc1e68",
-    "name": "Vinícius de Freitas",
-    "email": "teste@teste.com",
-    "cpf": "12312312312",
-    "orders": [],
-    "cart": {
-      "cart_id": "22a609f4-df34-4d48-a521-6b8278c82380",
-      "total": 0,
-      "products": []
-    }
-  }
-]
-```
-
-## GET - /users/:id
 Authorization: Bearer `Token`<br>
 Caso dê tudo certo irá retornar o status code 200 e a seguinte resposta:
 
